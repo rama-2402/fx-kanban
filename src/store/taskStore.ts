@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { FXTask } from '../types/task'
 
-interface TaskStore {
+export interface TaskStore {
   tasks: FXTask[]
   setTasks: (tasks: FXTask[]) => void
   updateTask: (task: FXTask) => void

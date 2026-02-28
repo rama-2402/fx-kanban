@@ -8,10 +8,10 @@ import {
   type DragEndEvent,
   type DragStartEvent,
 } from '@dnd-kit/core'
-import { useTasks, updateTaskInDB } from '../hooks/useTasks'
-import { useTaskStore } from '../store/taskStore'
-import type { FXTask, TaskStatus } from '../types/task'
-import FilterBar from '../components/shared/FilterBar'
+import { useTasks, updateTaskInDB } from '../../hooks/useTasks'
+import { useTaskStore, type TaskStore } from '../../store/taskStore'
+import type { FXTask, TaskStatus } from '../../types/task'
+import FilterBar from '../shared/FilterBar'
 import KanbanColumn from './KanbanColumn'
 import KanbanCard from './KanbanCard'
 import CardDetailModal from './CardDetailModal'
@@ -49,7 +49,7 @@ function LoadingSkeleton() {
 
 export default function KanbanBoard() {
   const { tasks, loading, error } = useTasks()
-  const updateTask = useTaskStore((s) => s.updateTask)
+  const updateTask = useTaskStore((s: TaskStore) => s.updateTask)
 
   const [filteredTasks, setFilteredTasks] = useState<FXTask[]>([])
   const [groupByWeek, setGroupByWeek] = useState(false)
@@ -93,7 +93,7 @@ export default function KanbanBoard() {
 
   function handleDragStart(event: DragStartEvent) {
     const taskId = event.active.id as string
-    const task = tasks.find((t) => t.id === taskId)
+    const task = tasks.find((t: FXTask) => t.id === taskId)
     if (task) setActiveTask(task)
   }
 
@@ -102,14 +102,14 @@ export default function KanbanBoard() {
     const { active, over } = event
     if (!over) return
     const taskId = active.id as string
-    const task = tasks.find((t) => t.id === taskId)
+    const task = tasks.find((t: FXTask) => t.id === taskId)
     if (!task) return
 
     let newStatus: TaskStatus | null = null
     if (COLUMN_ORDER.includes(over.id as TaskStatus)) {
       newStatus = over.id as TaskStatus
     } else {
-      const overTask = tasks.find((t) => t.id === over.id)
+      const overTask = tasks.find((t: FXTask) => t.id === over.id)
       if (overTask) newStatus = overTask.status
     }
 

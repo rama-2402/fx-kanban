@@ -81,24 +81,27 @@ export default function CardDetailModal({
 
   if (!task) return null
 
+  const currentTask = task
+
   async function handleSave() {
     setSaving(true)
     try {
-      await updateTaskInDB(task.id, {
+      await updateTaskInDB(currentTask.id, {
         ...(status && { status: status as TaskStatus }),
         task_description: taskDescription || undefined,
         designer: designer || undefined,
         pm: pm || undefined,
         demo_date: demoDate || undefined,
       })
-      onUpdate({
-        ...task,
-        status: (status as TaskStatus) || task.status,
+      const updated: FXTask = {
+        ...currentTask,
+        status: (status as TaskStatus) || currentTask.status,
         task_description: taskDescription || undefined,
         designer: designer || undefined,
         pm: pm || undefined,
         demo_date: demoDate || undefined,
-      })
+      }
+      onUpdate(updated)
       onClose()
     } catch (err) {
       console.error(err)
@@ -111,8 +114,8 @@ export default function CardDetailModal({
     if (!window.confirm('Are you sure you want to delete this task?')) return
     setDeleting(true)
     try {
-      await deleteTaskFromDB(task.id)
-      onDelete(task)
+      await deleteTaskFromDB(currentTask.id)
+      onDelete(currentTask)
       onClose()
     } catch (err) {
       console.error(err)
